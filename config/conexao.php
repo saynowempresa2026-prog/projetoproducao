@@ -21,7 +21,7 @@ $port = getenv('DB_PORT') ?: '5432';
 $db   = getenv('DB_DATABASE') ?: 'projeto_breno_bihm';
 $user = getenv('DB_USERNAME') ?: 'projeto_breno_bihm_user';
 $pass = getenv('DB_PASSWORD') ?: 'zppaaBNuNqjsurHOqGZfCskGFTIu6345';
-$sslmode = getenv('DB_SSLMODE') ?: 'disable';
+$sslmode = getenv('DB_SSLMODE') ?: 'require';
 
 try {
     $dsn = "pgsql:host=$host;port=$port;dbname=$db;sslmode=$sslmode;connect_timeout=5";
