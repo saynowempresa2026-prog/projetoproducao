@@ -154,7 +154,7 @@ try {
     </style>
 </head>
 <body>
-    <audio id="audioAlerta" src="alerta/alerta_pedido.mp3" preload="auto"></audio>
+    <audio id="audioAlerta" src="alerta_pedido.mp3" preload="auto"></audio>
     <div class="header">
         <h1 style="margin: 0;">🛎️ Pedidos Ativos</h1>
         <div>Atualização automática em <span id="contador">30</span>s</div>
