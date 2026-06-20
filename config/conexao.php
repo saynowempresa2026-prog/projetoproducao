@@ -16,11 +16,11 @@ if (file_exists($envPath)) {
     }
 }
 
-$host = getenv('DB_HOST') ?: 'localhost';
+$host = getenv('DB_HOST') ?: 'dpg-d8rghsho3t8c73d4mn70-a.oregon-postgres.render.com';
 $port = getenv('DB_PORT') ?: '5432';
 $db   = getenv('DB_DATABASE') ?: 'projeto_breno_bihm';
-$user = getenv('DB_USERNAME') ?: 'postgres';
-$pass = getenv('DB_PASSWORD') ?: 'root';
+$user = getenv('DB_USERNAME') ?: 'projeto_breno_bihm_user';
+$pass = getenv('DB_PASSWORD') ?: 'zppaaBNuNqjsurHOqGZfCskGFTIu6345';
 $sslmode = getenv('DB_SSLMODE') ?: 'disable';
 
 try {
