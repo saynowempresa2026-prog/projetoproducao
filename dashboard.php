@@ -157,8 +157,8 @@ if ($_SESSION['nivel'] === 'garcom') {
                         <li><a href="clientes.php" target="conteudo">👥 Clientes</a></li>
                         <li><a href="clientes_online.php" target="conteudo">👥 Clientes Online</a></li>
                         <li><a href="empresa.php" target="conteudo">🏢 Empresa</a></li>
-                        <li><a href="fornecedores.php" target="conteudo">🏭 Fornecedores</a></li>
                         <li><a href="pagamentos.php" target="conteudo">💳 Formas de Pagamento</a></li>
+                        <li><a href="fornecedores.php" target="conteudo">🏭 Fornecedores</a></li>
                         <li><a href="motoboy.php" target="conteudo">🏍️ Motoboy</a></li>
                         <li><a href="plano_contas.php" target="conteudo">📊 Plano de Contas</a></li>
                         <li><a href="produtos.php" target="conteudo">📦 Produtos</a></li>
@@ -173,17 +173,17 @@ if ($_SESSION['nivel'] === 'garcom') {
                     <a href="javascript:void(0)" class="nav-link dropdown-btn"><i class="fas fa-cash-register"></i> Faturamento <i class="fas fa-chevron-down arrow"></i></a>
                     <ul class="submenu">
                         <li><a href="caixas.php" target="conteudo">🏧 Abertura / Fechamento</a></li>
-                        <li><a href="gerenciar_sangrias.php" target="conteudo">💰 Sangrias</a></li>
                         <li><a href="pedidos.php" target="conteudo">🛒 Pedidos / Vendas</a></li>
+                        <li><a href="gerenciar_sangrias.php" target="conteudo">💰 Sangrias</a></li>
                         <?php if ($_SESSION['nivel'] !== 'garcom'): ?>
-                            <li><a href="expedicao_manual.php" target="conteudo">🏍️ Expedição Pedido (Motoboy) - Manual</a></li>
-                            <li><a href="fechamento_com_mesa.php" target="conteudo">🍽️ Mesas / Comandas</a></li>
-                            <li><a href="pedidos_online.php" target="conteudo">🛒 Pedidos Online</a></li>
-                            <li><a href="pedido_compra.php" target="conteudo">🛒 Pedido de Compra</a></li>
                             <li><a href="entrada_mercadoria.php" target="conteudo">📦 Entrada Mercadoria</a></li>
+                            <li><a href="expedicao_manual.php" target="conteudo">🏍️ Expedição Pedido (Motoboy) - Manual</a></li>
                             <li><a href="gerenciar_entrada.php" target="conteudo">📦 Gerenciar Compras</a></li>
-                            <li><a href="gerenciar_pedidos_compra.php" target="conteudo">⚙️ Pedidos Compra</a></li>
+                            <li><a href="gerenciar_pedidos_compra.php" target="conteudo">⚙️ Gerenciador - Pedidos Compra</a></li>
                             <li><a href="gerenciar_pedidos.php" target="conteudo">📑 Gerenciar Vendas</a></li>
+                            <li><a href="fechamento_com_mesa.php" target="conteudo">🍽️ Mesas / Comandas</a></li>
+                            <li><a href="pedido_compra.php" target="conteudo">🛒 Pedido de Compra</a></li>
+                            <li><a href="pedidos_online.php" target="conteudo">🛒 Pedidos Online</a></li>
                         <?php endif; ?>
                     </ul>
                 </li>
@@ -192,15 +192,13 @@ if ($_SESSION['nivel'] === 'garcom') {
                 <li class="nav-item">
                     <a href="javascript:void(0)" class="nav-link dropdown-btn"><i class="fas fa-university"></i> Financeiro <i class="fas fa-chevron-down arrow"></i></a>
                     <ul class="submenu">
-                        <li><a href="conferencia_caixas.php" target="conteudo">🕵️ Conferência Caixas</a></li>
                         <li><a href="auditoria_caixas.php" target="conteudo">🛡️ Auditoria de Caixa - Relatorios</a></li>
-                        <li><a href="relatorio_dfc.php" target="conteudo">📊 Demonstração do Fluxo de Caixa (DFC)</a></li>
-                        <li><a href="estorno_vendas.php" target="conteudo">🔄 Estorno de Caixas Conferidos - Cancelamentos</a></li>
-
-                        
+                        <li><a href="gerenciamento_cartoes.php" target="conteudo">💳 Cartões</a></li>
+                        <li><a href="conferencia_caixas.php" target="conteudo">🕵️ Conferência Caixas</a></li>
                         <li><a href="contas_receber.php" target="conteudo">📑 Contas a Receber</a></li>
                         <li><a href="contas_pagar.php" target="conteudo">📉 Contas a Pagar</a></li>
-                        <li><a href="gerenciamento_cartoes.php" target="conteudo">💳 Cartões</a></li>
+                        <li><a href="relatorio_dfc.php" target="conteudo">📊 Demonstração do Fluxo de Caixa (DFC)</a></li>
+                        <li><a href="estorno_vendas.php" target="conteudo">🔄 Estorno de Caixas Conferidos - Cancelamentos</a></li>
                     </ul>
                 </li>
                 <?php endif; ?>
@@ -217,18 +215,18 @@ if ($_SESSION['nivel'] === 'garcom') {
                 <li class="nav-item">
                     <a href="javascript:void(0)" class="nav-link dropdown-btn"><i class="fas fa-chart-line"></i> Relatórios <i class="fas fa-chevron-down arrow"></i></a>
                     <ul class="submenu">
-                        <li><a href="rel_vendas.php" target="conteudo">📈 Vendas Período</a></li>
-                        <li><a href="rel_pedidos_online.php" target="conteudo">📈 Vendas Online</a></li>
-                        <li><a href="rel_estoque.php" target="conteudo">📦 Posição Estoque</a></li>
-                        <li><a href="itens_online_venda.php" target="conteudo">📦 Estoque Vendas Online</a></li>
-                        <li><a href="rel_financeiro_geral.php" target="conteudo">💸 Resumo (DRE)</a></li>
-                        <li><a href="rel_curva.php" target="conteudo">👥 Curva ABC</a></li>
-                        <li><a href="rel_pagamentos.php" target="conteudo">💳 Meios Pagamento</a></li>
                         <li><a href="rel_conciliacao_cartao.php" target="conteudo">💳 Conciliação Cartões</a></li>
                         <li><a href="rel_contas_receber.php" target="conteudo">💰 Contas Rec + Pag</a></li>
-                        <li><a href="motoboy_taxas.php" target="conteudo">🏍️ Motoboy Taxas</a></li>
-                        <li><a href="rel_mesa_comanda.php" target="conteudo">🍽️ Mesas / Comandas</a></li>
+                        <li><a href="rel_curva.php" target="conteudo">👥 Curva ABC</a></li>
+                        <li><a href="itens_online_venda.php" target="conteudo">📦 Estoque Vendas Online</a></li>
                         <li><a href="logs.php" target="conteudo">🗑️ Logs Sistema</a></li>
+                        <li><a href="rel_pagamentos.php" target="conteudo">💳 Meios Pagamento</a></li>
+                        <li><a href="rel_mesa_comanda.php" target="conteudo">🍽️ Mesas / Comandas</a></li>
+                        <li><a href="motoboy_taxas.php" target="conteudo">🏍️ Motoboy Taxas</a></li>
+                        <li><a href="rel_estoque.php" target="conteudo">📦 Posição Estoque</a></li>
+                        <li><a href="rel_financeiro_geral.php" target="conteudo">💸 Resumo (DRE)</a></li>
+                        <li><a href="rel_pedidos_online.php" target="conteudo">📈 Vendas Online</a></li>
+                        <li><a href="rel_vendas.php" target="conteudo">📈 Vendas Período</a></li>
                     </ul>
                 </li>
 
