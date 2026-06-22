@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_salvar'])) {
 
 // Busca as categorias
 try {
-    $query = $pdo->query("SELECT * FROM categorias ORDER BY nome ASC");
+    $query = $pdo->query("SELECT * FROM categorias ORDER BY id");
     $categorias = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $categorias = []; 
