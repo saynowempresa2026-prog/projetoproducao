@@ -2,7 +2,7 @@
 
 window.produtoSelecionado = null;
 
-// 1. Busca de Produtos (Autocompletar)
+// 1. Busca de Produtos (Autocompletar) - AJUSTADO PARA SALVAR O ESTOQUE
 window.configurarBusca = function() {
     const inputProd = document.getElementById('input_produto');
     const listaProd = document.getElementById('lista_produtos');
@@ -20,12 +20,16 @@ window.configurarBusca = function() {
                     data.forEach(prod => {
                         let div = document.createElement('div');
                         div.className = "item-busca";
-                        div.innerText = `${prod.nome} - R$ ${parseFloat(prod.preco_venda).toFixed(2)}`;
+                        // Exibe opcionalmente o estoque na busca para o garçom ver
+                        let textoEstoque = prod.estoque !== undefined ? ` (Estoque: ${prod.estoque})` : '';
+                        div.innerText = `${prod.nome} - R$ ${parseFloat(prod.preco_venda).toFixed(2)}${textoEstoque}`;
+                        
                         div.onclick = function() {
                             window.produtoSelecionado = { 
                                 id: prod.id, 
                                 nome: prod.nome, 
-                                valor: prod.preco_venda 
+                                valor: prod.preco_venda,
+                                estoque: parseInt(prod.estoque) // Armazena o estoque do produto selecionado
                             };
                             inputProd.value = prod.nome;
                             listaProd.style.display = "none";
@@ -80,7 +84,7 @@ window.carregarItens = function() {
         .catch(err => console.error("Erro ao carregar tabela:", err.message));
 };
 
-// 3. Adicionar Item
+// 3. Adicionar Item - COM VALIDAÇÃO DE ESTOQUE INTEGRADA
 window.addItemGarcom = function() {
     if (!window.produtoSelecionado) {
         alert("Selecione um produto clicando na lista!");
@@ -88,7 +92,20 @@ window.addItemGarcom = function() {
     }
 
     const qtdInput = document.getElementById('qtd_item');
-    const qtd = qtdInput ? qtdInput.value : 1;
+    const qtd = qtdInput ? parseInt(qtdInput.value) : 1;
+
+    if (qtd <= 0 || isNaN(qtd)) {
+        alert("Por favor, digite uma quantidade válida.");
+        return;
+    }
+
+    // --- VALIDAÇÃO DE ESTOQUE ---
+    if (window.produtoSelecionado.estoque !== undefined && !isNaN(window.produtoSelecionado.estoque)) {
+        if (qtd > window.produtoSelecionado.estoque) {
+            alert(`Estoque insuficiente! Você tentou selecionar ${qtd}, mas o produto "${window.produtoSelecionado.nome}" só possui ${window.produtoSelecionado.estoque} unidade(s) em estoque.`);
+            return; // Bloqueia a requisição para o servidor aqui
+        }
+    }
 
     const dados = {
         pedido_id: window.pedido_id,
@@ -116,7 +133,7 @@ window.addItemGarcom = function() {
     .catch(err => console.error("Erro ao salvar:", err));
 };
 
-// 4. Remover Item
+// 4. Remover Item - SISTEMA ULTRA PROTEGIDO CONTRA CACHE
 window.removerItem = function(id) {
     const motivo = prompt("Informe o motivo do cancelamento deste item:");
     if (motivo === null) return; 
@@ -138,7 +155,31 @@ window.removerItem = function(id) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            window.carregarItens();
+            if (data.pedidoVazio) {
+                
+                // 1ª CAMADA DE SEGURANÇA: Resposta direta do Banco de Dados
+                let destinoOrigem = data.tipoOrigem;
+
+                // 2ª CAMADA DE SEGURANÇA: Se o cache falhar e der undefined, verifica pela URL física da tela
+                if (!destinoOrigem) {
+                    const localUrl = window.location.href.toLowerCase();
+                    if (localUrl.includes('mesa') || localUrl.includes('tipo=mesa')) {
+                        destinoOrigem = 'mesa';
+                    }
+                }
+
+                // Executa o redirecionamento com base no veredito final
+                if (destinoOrigem === 'mesa') {
+                    alert("Último item removido! O pedido foi cancelado e a MESA voltou a ficar livre.");
+                    window.location.href = "mesas.php";
+                } else {
+                    alert("Último item removido! O pedido foi cancelado e a COMANDA voltou a ficar livre.");
+                    window.location.href = "comandas.php";
+                }
+
+            } else {
+                window.carregarItens();
+            }
         } else {
             alert("Erro ao remover: " + data.erro);
         }
@@ -161,18 +202,15 @@ window.criarMesa = function() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ numero: numeroMesa })
     })
-    
     .then(res => res.text())
     .then(text => {
         try {
             const data = JSON.parse(text);
-
             if (data.success) {
                 location.reload();
             } else {
                 alert(data.erro);
             }
-
         } catch (e) {
             console.error("Resposta inválida:", text);
             alert("Erro no servidor (resposta inválida)");
