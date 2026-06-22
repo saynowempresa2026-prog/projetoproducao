@@ -9,8 +9,8 @@ $termo = $_GET['query'] ?? '';
 
 try {
     if (!empty($termo)) {
-        // Ajustado para as colunas reais: id, nome, preco_venda
-        $sql = "SELECT id, nome, preco_venda 
+        // ADICIONADO: "estoque" trazido no SELECT para o JavaScript ler
+        $sql = "SELECT id, nome, preco_venda, estoque 
                 FROM produtos 
                 WHERE (nome ILIKE :busca OR codigo_barras ILIKE :busca)
                 AND status = 'Ativo' 

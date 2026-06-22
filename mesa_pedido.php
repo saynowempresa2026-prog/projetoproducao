@@ -66,7 +66,6 @@ if (!$stmt->fetch()) {
 
     <div class="card p-3 mb-3">
 
-        <!-- BUSCA PRODUTO -->
         <div class="row g-2 mb-3">
             <div class="col-md-8 position-relative">
                 <input type="text" id="input_produto" class="form-control" placeholder="Buscar produto...">
@@ -78,28 +77,27 @@ if (!$stmt->fetch()) {
             </div>
 
             <div class="col-md-2">
-<button class="btn btn-success w-100" onclick="addItemGarcom()">
-    ADD
-</button>
+                <button class="btn btn-success w-100" onclick="addItemGarcom()">
+                    ADD
+                </button>
             </div>
         </div>
 
-        <!-- TABELA -->
         <div class="table-responsive">
             <table class="table" id="tabela_itens">
-<thead>
-    <tr>
-        <th>Produto</th>
-        <th class="text-center">Qtd</th>
-        <th class="text-end">Preço</th>
-        <th class="text-end">Total</th>
-        <th class="text-center">Ações</th> </tr>
-</thead>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th class="text-center">Qtd</th>
+                        <th class="text-end">Preço</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-center">Ações</th> 
+                    </tr>
+                </thead>
                 <tbody></tbody>
             </table>
         </div>
 
-        <!-- TOTAL -->
         <div class="text-end mt-3">
             <h4>Total: <span id="total_exibicao">R$ 0,00</span></h4>
         </div>
@@ -110,9 +108,70 @@ if (!$stmt->fetch()) {
 
 <script>
     window.pedido_id = <?= (int)$pedido_id ?>;
+
+    // LÓGICA DE INTERCEPTAÇÃO INDESTRUTÍVEL (Ignora o cache do garcom.js)
+    // Criamos a nossa própria função de remoção que o botão da mesa vai chamar obrigatoriamente
+    function removerItemMesa(id) {
+        const motivo = prompt("Informe o motivo do cancelamento deste item:");
+        if (motivo === null) return; 
+
+        if (motivo.trim() === "") {
+            alert("O motivo é obrigatório para realizar a exclusão.");
+            return;
+        }
+
+        fetch('remover_item.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                id: id, 
+                pedido_id: window.pedido_id,
+                motivo: motivo 
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (data.pedidoVazio) {
+                    alert("Último item removido! O pedido foi cancelado e a MESA voltou a ficar livre.");
+                    window.location.href = "mesas.php"; // Redirecionamento forçado no HTML
+                } else {
+                    // Se ainda tiver itens, usa a função global do garcom.js para redesenhar a tabela
+                    if (typeof window.carregarItens === 'function') {
+                        window.carregarItens();
+                    } else {
+                        location.reload();
+                    }
+                }
+            } else {
+                alert("Erro ao remover: " + data.erro);
+            }
+        })
+        .catch(err => console.error("Erro na remoção:", err));
+    }
+
+    // Monitora a tabela. Sempre que o arquivo js/garcom.js antigo renderizar o botão chamando "removerItem(X)",
+    // nós alteramos dinamicamente para chamar a nossa nova "removerItemMesa(X)"
+    const observer = new MutationObserver(() => {
+        const botoes = document.querySelectorAll("#tabela_itens tbody button");
+        botoes.forEach(botao => {
+            const onclickTxt = botao.getAttribute("onclick");
+            if (onclickTxt && onclickTxt.includes("removerItem(")) {
+                const novoOnclick = onclickTxt.replace("removerItem(", "removerItemMesa(");
+                botao.setAttribute("onclick", novoOnclick);
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const tbody = document.querySelector("#tabela_itens tbody");
+        if (tbody) {
+            observer.observe(tbody, { childList: true });
+        }
+    });
 </script>
 
-<script src="js/garcom.js?v=1.2"></script>
+<script src="js/garcom.js?v=999"></script>
 
 </body>
 </html>

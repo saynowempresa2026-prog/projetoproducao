@@ -26,7 +26,7 @@ try {
     $stmtProd->execute([':id' => $item_id]);
     $nomeProduto = $stmtProd->fetchColumn();
 
-    // 2. Registra o Log (Usando os nomes exatos da sua tabela: descricao, tabela_afetada, etc)
+    // 2. Registra o Log
     $msgLog = "Item removido: $nomeProduto. Motivo: $motivo";
     
     $stmtLog = $pdo->prepare("
@@ -38,7 +38,7 @@ try {
     
     $stmtLog->execute([
         ':u_id'   => $_SESSION['usuario_id'],
-        ':u_nome' => $_SESSION['usuario_nome'], // Certifique-se que existe na sessão
+        ':u_nome' => $_SESSION['usuario_nome'],
         ':acao'   => 'EXCLUSAO',
         ':tabela' => 'pedidos_itens',
         ':desc'   => $msgLog
@@ -60,8 +60,34 @@ try {
     ");
     $stmtUpd->execute([':pedido' => $pedido_id]);
 
+    // 5. Verifica se ainda sobrou algum item neste pedido e descobre a origem
+    $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM pedidos_itens WHERE pedido_id = :pedido");
+    $stmtCheck->execute([':pedido' => $pedido_id]);
+    $itensRestantes = $stmtCheck->fetchColumn();
+
+    $pedidoVazio = false;
+    $tipoOrigem = 'comanda'; // Padrão de segurança caso não encontre
+
+    if ($itensRestantes == 0) {
+        // CORREÇÃO AQUI: Busca se o pedido original era de 'mesa' ou 'comanda' antes de atualizar
+        $stmtOrigem = $pdo->prepare("SELECT origem_tipo FROM pedidos WHERE id = :pedido");
+        $stmtOrigem->execute([':pedido' => $pedido_id]);
+        $tipoOrigem = $stmtOrigem->fetchColumn() ?: 'comanda';
+
+        // Se zerou os itens, muda a situação do pedido para 'cancelado'
+        $stmtFecharPedido = $pdo->prepare("UPDATE pedidos SET situacao = 'cancelado' WHERE id = :pedido");
+        $stmtFecharPedido->execute([':pedido' => $pedido_id]);
+        $pedidoVazio = true;
+    }
+
     $pdo->commit();
-    echo json_encode(['success' => true]);
+    
+    // RETORNO ATUALIZADO: Passando o tipoOrigem explicitamente para o JS
+    echo json_encode([
+        'success' => true, 
+        'pedidoVazio' => $pedidoVazio,
+        'tipoOrigem' => $tipoOrigem
+    ]);
 
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
