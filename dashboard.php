@@ -229,14 +229,14 @@ if ($_SESSION['nivel'] === 'garcom') {
                         <li><a href="rel_vendas.php" target="conteudo">📈 Vendas Período</a></li>
                     </ul>
                 </li>
-                    <li class="nav-item">
-                        <a href="https://raw.githubusercontent.com/saynowempresa2026-prog/projetoproducao/main/manual-sistema.pdf" 
-                           target="_blank" 
-                           class="nav-link">
-                            <i class="fas fa-book"></i> Manual Sistema
-                        </a>
-                    </li>
-                <li class="nav-item" style="margin-top: 20px;">
+                            <li class="nav-item">
+                                <a href="https://raw.githubusercontent.com/saynowempresa2026-prog/projetoproducao/main/SAY%20NOW%20-%20MANUAL%20SISTEMA.pdf" 
+                                   target="_blank" 
+                                   class="nav-link">
+                                    <i class="fas fa-book"></i> Manual Sistema
+                                </a>
+                            </li>
+                        <li class="nav-item" style="margin-top: 20px;">
                     <a href="sair.php" class="nav-link btn-sair">
                         <i class="fas fa-sign-out-alt"></i> Sair
                     </a>
