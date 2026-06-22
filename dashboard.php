@@ -230,7 +230,7 @@ if ($_SESSION['nivel'] === 'garcom') {
                     </ul>
                 </li>
                         <li class="nav-item">
-                        <a href="https://raw.githubusercontent.com/saynowempresa2026-prog/projetoproducao/main/SAY%20NOW%20-%20MANUAL%20SISTEMA.pdf" 
+                        <a href="https://github.com/saynowempresa2026-prog/projetoproducao/main/SAY%20NOW%20-%20MANUAL%20SISTEMA.pdf" 
                                target="_blank" 
                                class="nav-link">
                                     <i class="fas fa-book"></i> Manual Sistema
