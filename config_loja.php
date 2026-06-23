@@ -78,7 +78,8 @@ $stmtBairros = $pdo->prepare("SELECT * FROM taxas_bairros WHERE empresa_id = ? O
 $stmtBairros->execute([$empresa_id]);
 $bairros = $stmtBairros->fetchAll();
 
-$stmtHorarios = $pdo->prepare("SELECT * FROM horarios_funcionamento WHERE empresa_id = ?");
+// ALTERADO AQUI: Forçando o dia_semana a vir primeiro no SELECT para o FETCH_UNIQUE usar ele como índice do array
+$stmtHorarios = $pdo->prepare("SELECT dia_semana, abertura, fechamento, situacao FROM horarios_funcionamento WHERE empresa_id = ?");
 $stmtHorarios->execute([$empresa_id]);
 $horarios_db = $stmtHorarios->fetchAll(PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
 
@@ -341,8 +342,9 @@ $dias_semana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'S�
                 </thead>
                 <tbody>
                     <?php foreach($dias_semana as $id => $nome): 
-                        $h_abertura = $horarios_db[$id]['abertura'] ?? '18:00';
-                        $h_fechamento = $horarios_db[$id]['fechamento'] ?? '23:00';
+                        // ALTERADO AQUI: tratamento para remover os segundos (00) que o MySQL puxa do tipo TIME (ex: "18:00:00" vira "18:00")
+                        $h_abertura = isset($horarios_db[$id]['abertura']) ? substr($horarios_db[$id]['abertura'], 0, 5) : '18:00';
+                        $h_fechamento = isset($horarios_db[$id]['fechamento']) ? substr($horarios_db[$id]['fechamento'], 0, 5) : '23:00';
                         $aberto = ($horarios_db[$id]['situacao'] ?? 'aberto') == 'aberto';
                     ?>
                     <tr>
